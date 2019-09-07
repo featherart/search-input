@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Tag } from '../Tag'
-import { FiPlusSquare, FiXSquare, FiX, FiFilter } from 'react-icons/fi'
+import { FiPlusSquare, FiXSquare, FiX, FiFilter, FiSmile } from 'react-icons/fi'
 import './search-input.css'
 
 const labels = [
@@ -16,14 +16,13 @@ export const SearchInput = () => {
   const [ value, setValue ] = useState('')
   const [ tags, setTags ] = useState([])
   const [ labelsOpen, toggleLabels ] = useState(false)
-
   const addToTags = (label) => {
-    setTags([...tags, label])
+    if (!tags.includes(label)) setTags([...tags, label])
   }
 
-  const removeFromTags = i => {
+  const removeFromTags = (tag, i) => {
     tags.splice(i, 1)
-    setTags(tags)
+    setTags([...tags])
   }
 
   const clearAll = () => {
@@ -31,20 +30,16 @@ export const SearchInput = () => {
     setValue('')
   }
 
-  useEffect(() => {
-
-  }, [tags])
-
   const placeholder = (tags.length || value) ? '' : 'search...'
   return (
-    <div className='input-filter' className='input-filter'>
+    <div className='input-filter'>
       {labelsOpen ? (
 					<div>
 						<FiXSquare className='open-close-icon' onClick={() => toggleLabels(!labelsOpen)} />
 						<div className='search-input-label-container'>
 							{labels.map((label, i) => (
 								<span key={i} onClick={() => addToTags(label.name)}>
-									{label.name}
+									<FiSmile className='label-icon'/>{label.name}
 								</span>
 							))}
 						</div>
@@ -57,7 +52,7 @@ export const SearchInput = () => {
       <div className='inner'>
         {tags.map((tag, i) => {
           return (
-            <Tag onClick={(tag, i) => removeFromTags(i)} key={i}>
+            <Tag onClick={() => removeFromTags(tag, i)} key={i}>
               {tag}
             </Tag>
           )
