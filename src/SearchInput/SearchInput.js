@@ -32,38 +32,41 @@ export const SearchInput = () => {
 
   const placeholder = (tags.length || value) ? '' : 'search...'
   return (
-    <div className='input-filter'>
-      {labelsOpen ? (
-					<div>
-						<FiXSquare className='open-close-icon' onClick={() => toggleLabels(!labelsOpen)} />
-						<div className='search-input-label-container'>
-							{labels.map((label, i) => (
-								<span key={i} onClick={() => addToTags(label.name)}>
-									<FiSmile className='label-icon'/>{label.name}
-								</span>
-							))}
-						</div>
-					</div>
-				) : (
-					<div>
-						<FiPlusSquare className='open-close-icon' onClick={() => toggleLabels(!labelsOpen)} />
-					</div>
-        )}
-      <div className='inner'>
-        {tags.map((tag, i) => {
-          return (
-            <Tag onClick={() => removeFromTags(tag, i)} key={i}>
-              {tag}
-            </Tag>
-          )
-        })}
-        <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder={placeholder}
-        />
+    <div className='input-filter-wrapper'>
+      <FiFilter className='filter-icon' />
+      <div className='input-filter'>
+        {labelsOpen ? (
+            <div>
+              <FiXSquare className='open-close-icon' onClick={() => toggleLabels(!labelsOpen)} />
+              <div className='search-input-label-container'>
+                {labels.map((label, i) => (
+                  <span key={i} onClick={() => addToTags(label.name)}>
+                    <FiSmile className='label-icon'/>{label.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <FiPlusSquare className='open-close-icon' onClick={() => toggleLabels(!labelsOpen)} />
+            </div>
+          )}
+        <div className='inner'>
+          {tags.map((tag, i) => {
+            return (
+              <Tag onClick={() => removeFromTags(tag, i)} key={i}>
+                {tag}
+              </Tag>
+            )
+          })}
+          <input
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder={placeholder}
+          />
+        </div>
+        <FiX className='close-icon' onClick={() => clearAll()} name='close-fill' />
       </div>
-      <FiX className='close-icon' onClick={() => clearAll()} name='close-fill' />
     </div>
   )
 }
