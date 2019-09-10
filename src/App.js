@@ -2,14 +2,14 @@ import React from 'react'
 import { SearchInput } from './SearchInput'
 
 function App() {
-	return (
-		<div>
-			<header className='app-header'>SearchVille Part II</header>
+  return (
+    <div>
+      <header className='app-header'>SearchVille Part II</header>
       <div className='content'>
-      <SearchInput />
+        <SearchInput />
       </div>
-		</div>
-	)
+    </div>
+  )
 }
 
 export default App
