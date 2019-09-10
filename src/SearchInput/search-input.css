@@ -45,6 +45,19 @@
 	margin-right: 75px;
 }
 
+.inner .list-values {
+  background-color: #fff;
+  display: block;
+}
+
+.list-values div:hover {
+  background-color: #EFF7E0;
+}
+
+.inner .tags-area {
+  display: flex;
+}
+
 .ui.tag {
 	margin: 2px;
 	padding: 2px 7px;
