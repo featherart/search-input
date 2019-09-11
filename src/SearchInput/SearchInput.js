@@ -43,8 +43,18 @@ export const SearchInput = () => {
     return listOpen === i ? setListOpen('') : setListOpen(i)
   }
 
-  const handleListClick = (listItem) => {
-    console.log('listItem', listItem)
+  const handleListClick = (listItem, tag, index) => {
+    tags.forEach((item, i) => {
+      if (item === tag) {
+        removeFromTags(item, i)
+        const before = tags.slice(0, i)
+        const after = tags.slice(i, tags.length)
+        if (!tags.includes(`${tag} : ${listItem}`))
+          setTags([ ...before, `${tag} : ${listItem}`, ...after ])
+      }
+    })
+
+    setListOpen('')
   }
 
   // only show placeholder if there are tags or values
@@ -89,8 +99,15 @@ export const SearchInput = () => {
                 </Tag>
                 <div>
                   {listOpen === i &&
+                    document.getElementById(i) &&
+                    !(tag.includes(':')) &&
                     ReactDOM.createPortal(
-                      <ListValuesComponent handleClick={handleListClick} listValues={listValues} />,
+                      <ListValuesComponent
+                        handleClick={handleListClick}
+                        tag={tag}
+                        index={i}
+                        listValues={listValues}
+                      />,
                       document.getElementById(i)
                     )}
                 </div>
@@ -113,17 +130,19 @@ export const SearchInput = () => {
   )
 }
 
-const ListValuesComponent = ({ listValues, handleClick }) => {
+const ListValuesComponent = ({ listValues, handleClick, tag, index }) => {
   return (
     <div className='inner-list-values'>
       {Array.isArray(listValues) ? (
         listValues.map((li, j) => (
-          <div onClick={() => handleClick(li)} key={j}>
+          <div onClick={() => handleClick(li, tag, index)} key={j}>
             {li}
           </div>
         ))
       ) : (
-        <div onClick={() => handleClick(listValues)}>{listValues}</div>
+        <div onClick={() => handleClick(listValues, tag, index)}>
+          {listValues}
+        </div>
       )}
     </div>
   )

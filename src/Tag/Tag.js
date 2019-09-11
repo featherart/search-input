@@ -18,6 +18,6 @@ export const Tag = ({
   >
     {children}
     <span id={id} />
-    <FiX onClick={close} />
+    <FiX onClick={close} className='tags-close-icon' />
   </span>
 )
