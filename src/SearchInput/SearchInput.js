@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Tag } from '../Tag'
 import { FiPlusSquare, FiXSquare, FiX, FiFilter, FiSmile } from 'react-icons/fi'
+import { useLocalStorage } from '../useLocalStorage'
 import './search-input.css'
 
 const labels = [
@@ -23,18 +24,27 @@ export const SearchInput = () => {
   const [ tags, setTags ] = useState([])
   const [ labelsOpen, toggleLabels ] = useState(false)
 
+  const [ , setSearchValues, getSearchValues ] = useLocalStorage(
+    'ngc::searchvalues'
+  )
+
   const addToTags = label => {
-    if (!tags.includes(label)) setTags([ ...tags, label ])
+    if (!tags.includes(label)) {
+      setTags([ ...tags, label ])
+      setSearchValues([ ...tags, label ])
+    }
   }
 
   const removeFromTags = (tag, i) => {
     tags.splice(i, 1)
     setTags([ ...tags ])
+    setSearchValues([ ...tags ])
   }
 
   const clearAll = () => {
     setTags([])
     setValue('')
+    setSearchValues('')
   }
 
   const handleTagList = (tag, i) => {
@@ -51,6 +61,7 @@ export const SearchInput = () => {
         const after = tags.slice(i, tags.length)
         if (!tags.includes(`${tag} : ${listItem}`))
           setTags([ ...before, `${tag} : ${listItem}`, ...after ])
+        setSearchValues([ ...before, `${tag} : ${listItem}`, ...after ])
       }
     })
 
@@ -100,7 +111,7 @@ export const SearchInput = () => {
                 <div>
                   {listOpen === i &&
                     document.getElementById(i) &&
-                    !(tag.includes(':')) &&
+                    !tag.includes(':') &&
                     ReactDOM.createPortal(
                       <ListValuesComponent
                         handleClick={handleListClick}
