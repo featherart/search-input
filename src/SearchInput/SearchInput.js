@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Tag } from '../Tag'
 import { FiPlusSquare, FiXSquare, FiX, FiFilter, FiSmile } from 'react-icons/fi'
 import './search-input.css'
@@ -39,10 +40,14 @@ export const SearchInput = () => {
   const handleTagList = (tag, i) => {
     const val = labels.find(label => label.name === tag)
     setListValues(val && val.value)
-    return (listOpen === i) ? setListOpen('') : setListOpen(i)
+    return listOpen === i ? setListOpen('') : setListOpen(i)
   }
 
-  // only show placeholder if there are tags or values 
+  const handleListClick = (listItem) => {
+    console.log('listItem', listItem)
+  }
+
+  // only show placeholder if there are tags or values
   const placeholder = tags.length || value ? '' : 'search...'
   return (
     <div className='input-filter-wrapper'>
@@ -78,16 +83,16 @@ export const SearchInput = () => {
                 <Tag
                   onClick={() => handleTagList(tag, i)}
                   close={() => removeFromTags(tag, i)}
+                  id={i}
                 >
                   {tag}
                 </Tag>
-                <div className='list-values'>
+                <div>
                   {listOpen === i &&
-                    (Array.isArray(listValues) ? (
-                      listValues.map((li, j) => <div key={j}>{li}</div>)
-                    ) : (
-                      <div>{listValues}</div>
-                    ))}
+                    ReactDOM.createPortal(
+                      <ListValuesComponent handleClick={handleListClick} listValues={listValues} />,
+                      document.getElementById(i)
+                    )}
                 </div>
               </div>
             )
@@ -104,6 +109,22 @@ export const SearchInput = () => {
           name='close-fill'
         />
       </div>
+    </div>
+  )
+}
+
+const ListValuesComponent = ({ listValues, handleClick }) => {
+  return (
+    <div className='inner-list-values'>
+      {Array.isArray(listValues) ? (
+        listValues.map((li, j) => (
+          <div onClick={() => handleClick(li)} key={j}>
+            {li}
+          </div>
+        ))
+      ) : (
+        <div onClick={() => handleClick(listValues)}>{listValues}</div>
+      )}
     </div>
   )
 }

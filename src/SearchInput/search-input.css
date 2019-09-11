@@ -45,12 +45,20 @@
 	margin-right: 75px;
 }
 
-.inner .list-values {
+.inner-list-values {
   background-color: #fff;
   display: block;
+  position: absolute;
+  color: #666;
+  transform: translate(3px, -12px);
+  padding: 5px 0;
 }
 
-.list-values div:hover {
+.inner-list-values div {
+  padding: 0 10px;
+}
+
+.inner-list-values div:hover {
   background-color: #EFF7E0;
 }
 

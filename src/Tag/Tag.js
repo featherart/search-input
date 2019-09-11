@@ -7,7 +7,8 @@ export const Tag = ({
   close,
   onClick,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
+  id
 }) => (
   <span
     className='ui tag'
@@ -16,6 +17,7 @@ export const Tag = ({
     onMouseLeave={onMouseLeave}
   >
     {children}
+    <span id={id} />
     <FiX onClick={close} />
   </span>
 )
