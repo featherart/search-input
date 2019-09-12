@@ -5,29 +5,27 @@ import { FiPlusSquare, FiXSquare, FiX, FiFilter, FiSmile } from 'react-icons/fi'
 import { useLocalStorage } from '../useLocalStorage'
 import './search-input.css'
 
-const labels = [
-  { name: 'Name', value: 'cuda' },
-  { name: 'Latest Tag', value: '1.0' },
-  { name: 'Size', value: [ 'large', 'medium', 'small' ] },
-  {
-    name: 'Module',
-    value: [ 'cuda', 'tigah', 'bearah', 'scorpion', 'killah' ]
-  },
-  { name: 'Library', value: [ 'books', 'cooks', 'wookies' ] },
-  { name: 'Spec', value: [ 'beer', 'cider', 'vodka', 'wine' ] }
-]
-
-export const SearchInput = () => {
+export const SearchInput = ({ placeholder, labels }) => {
+  // value is the overall collection of search values
+  // this is what will be submitted to the api for filtering/search
   const [ value, setValue ] = useState('')
+
+  // this is the list of inner values for tags
   const [ listValues, setListValues ] = useState([])
-  const [ listOpen, setListOpen ] = useState('')
+
+  // this is initialized with a null string but it will be set to the
+  // index value of the tag with a list that is currently open
+  const [ listIndexOpen, setListIndexOpen ] = useState('')
+
   const [ tags, setTags ] = useState([])
   const [ labelsOpen, toggleLabels ] = useState(false)
 
+  // values get set in local storage in a collection
   const [ , setSearchValues, getSearchValues ] = useLocalStorage(
     'ngc::searchvalues'
   )
 
+  // adds label to search input & tags array when clicked
   const addToTags = label => {
     if (!tags.includes(label)) {
       setTags([ ...tags, label ])
@@ -35,24 +33,30 @@ export const SearchInput = () => {
     }
   }
 
+  // removes tag from input when x clicked
   const removeFromTags = (tag, i) => {
     tags.splice(i, 1)
     setTags([ ...tags ])
     setSearchValues([ ...tags ])
   }
 
+  // clears all tags and search inputs
   const clearAll = () => {
     setTags([])
     setValue('')
     setSearchValues('')
   }
 
+  // opens the inner list of values
+  // index is used to make sure list is opened for the correct tag
   const handleTagList = (tag, i) => {
     const val = labels.find(label => label.name === tag)
     setListValues(val && val.value)
-    return listOpen === i ? setListOpen('') : setListOpen(i)
+    return listIndexOpen === i ? setListIndexOpen('') : setListIndexOpen(i)
   }
 
+  // when an item in the list is clicked it should be added to the tag
+  // the element is removed and replaced, preserving order of tags
   const handleListClick = (listItem, tag, index) => {
     tags.forEach((item, i) => {
       if (item === tag) {
@@ -64,12 +68,11 @@ export const SearchInput = () => {
         setSearchValues([ ...before, `${tag} : ${listItem}`, ...after ])
       }
     })
-
-    setListOpen('')
+    setListIndexOpen('')
   }
 
   // only show placeholder if there are tags or values
-  const placeholder = tags.length || value ? '' : 'search...'
+  const innerPlaceholder = tags.length || value ? '' : placeholder
   return (
     <div className='input-filter-wrapper'>
       <FiFilter className='filter-icon' />
@@ -109,7 +112,7 @@ export const SearchInput = () => {
                   {tag}
                 </Tag>
                 <div>
-                  {listOpen === i &&
+                  {listIndexOpen === i &&
                     document.getElementById(i) &&
                     !tag.includes(':') &&
                     ReactDOM.createPortal(
@@ -128,7 +131,7 @@ export const SearchInput = () => {
           <input
             value={value}
             onChange={e => setValue(e.target.value)}
-            placeholder={placeholder}
+            placeholder={innerPlaceholder}
           />
         </div>
         <FiX

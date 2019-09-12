@@ -6,15 +6,11 @@ export const Tag = ({
   children,
   close,
   onClick,
-  onMouseEnter,
-  onMouseLeave,
   id
 }) => (
   <span
     className='ui tag'
     onClick={onClick}
-    onMouseEnter={onMouseEnter}
-    onMouseLeave={onMouseLeave}
   >
     {children}
     <span id={id} />
