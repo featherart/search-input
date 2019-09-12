@@ -21,6 +21,8 @@ export const SearchInput = ({ placeholder, labels }) => {
   const [ labelsOpen, toggleLabels ] = useState(false)
 
   // values get set in local storage in a collection
+  // getSearchValues is not currently being used but it will
+  // be necessary to use it for loading up a users search preferences
   const [ , setSearchValues, getSearchValues ] = useLocalStorage(
     'ngc::searchvalues'
   )
@@ -83,14 +85,16 @@ export const SearchInput = ({ placeholder, labels }) => {
               className='open-close-icon'
               onClick={() => toggleLabels(!labelsOpen)}
             />
-            <div className='search-input-label-container'>
+            { ReactDOM.createPortal(
+            <div>
               {labels.map((label, i) => (
                 <span key={i} onClick={() => addToTags(label.name)}>
                   <FiSmile className='label-icon' />
                   {label.name}
                 </span>
               ))}
-            </div>
+            </div>, document.getElementById('list-values'))
+            }
           </div>
         ) : (
           <div>
@@ -130,7 +134,7 @@ export const SearchInput = ({ placeholder, labels }) => {
           })}
           <input
             value={value}
-            onChange={e => setValue(e.target.value)}
+            onChange={e => setValue(e && e.target && e.target.value)}
             placeholder={innerPlaceholder}
           />
         </div>
@@ -140,6 +144,7 @@ export const SearchInput = ({ placeholder, labels }) => {
           name='close-fill'
         />
       </div>
+      <div id='list-values' className='search-input-label-container' />
     </div>
   )
 }
